@@ -15,9 +15,9 @@ df_7 <- data.frame(
 df_7
 
 # Letra a
-mediana_a <- median(df_7$leito)
-desvio_a <- sd(df_7$leito)
-dist_interq_a_ <- IQR(df_7$leito)
+mediana_df_7 <- median(df_7$leito)
+desvio_df_7 <- sd(df_7$leito)
+dist_interq_df_7 <- IQR(df_7$leito)
 
 
 # Letra b
@@ -28,9 +28,9 @@ boxplot(df_7$leito, ylab = "Habitantes por leito")
 df_7_c <- subset(df_7, estado != "Amapá")
 df_7_c
 
-mediana_c <- median(df_7_c$leito)
-desvio_c <- sd(df_7_c$leito)
-dist_interq_c <- IQR(df_7_c$leito)
+mediana_df_7_c <- median(df_7_c$leito)
+desvio_df_7_c <- sd(df_7_c$leito)
+dist_interq_df_7c <- IQR(df_7_c$leito)
 
 
 # Letra d
@@ -86,7 +86,10 @@ barplot(table(df_9$Metodologia), main = "Distribuição da Metodologia",
 
 
 # Letra e
-# ???
+barplot(table(df_9$Estatist), main = "Distribuição das Notas em Estatística",
+        xlab = "Notas Estatísitca", ylab = "Frequência")
+
+media_estatistica <- mean(df_9$Estatist)
 
 
 # Questão 10
@@ -117,7 +120,7 @@ sd_z <- sd(df_9$notas_padrozinadas_estatist)
 df_9_atipico_acima <- subset(df_9, notas_padrozinadas_estatist > 2 * sd_z)
 df_9_atipico_acima
 
-# Símbolo à esquerda de 2dp(Z) ???
+# ?
 # df_9_atipico_abaixo <- subset(df_9, notas_padrozinadas_estatist < 2 * sd_z)
 # df_9_atipico_abaixo
 
@@ -138,6 +141,18 @@ table(df_11$heart.rate)
 
 
 # Letra c
+sort(unique(df_11$age))
+
+# 1 | 8
+# 2 | 0 1 2 3 4 5 6 9
+# 3 | 1 3 4 5 6 7 8 9
+# 4 | 0 1 2 3 4 5 6 7 8 9
+# 5 | 0 1 2 3 4 5 6 7 8 9
+# 6 | 0 1 2 3 4 5 6 7 8 9
+# 7 | 0 1 2 3 4 5 6 7 8 9
+# 8 | 0 1 2 3 4 5 6 8 9
+# 9 | 0 2 3 6 8
+
 plot(df_11$age, main = "Gráfico de Dispersão da Idade",
      xlab = "Índice", ylab = "Idade")
 
@@ -156,34 +171,73 @@ IQR(df_11$heart.rate)
 mad(df_11$heart.rate)
 var(df_11$heart.rate)
 
+assimetria_bowley <- function(df){
+  
+  q1 = quantile(df, 0.25)
+  q2 = quantile(df, 0.5)
+  q3 = quantile(df, 0.75)
+  iqr = IQR(df)
+  
+  numerador = (q3 - q2) - (q2 - q1)
+  denominador = q3 - q1
+  
+  return(numerador/ denominador)
+}
+
+assimetria_bowley(df_11$heart.rate)
+
 
 # Letra f
 boxplot(df_11$heart.rate)
-hist(df_11$heart.rate)
+
+library(ggplot2)
+ggplot(df_11, aes(x=heart.rate)) + geom_histogram()
 
 
 # Letra g
-C <- IQR(df_11$temperature)/ 2 * (quantile(df_11$temperature, 0.9) - quantile(df_11$temperature, 0.1))
-C/ 100
+curtose <- function(df){
+  
+  dq = IQR(df)
+  q1 = quantile(df, 0.1)
+  q9 = quantile(df, 0.9)
+  
+  return((dq/ (2 * (q9 - q1)))/ 100)
+}
+
+curtose(df_11$temperature)
 # Como C é menor do que 0.2631538, temperatura não segue uma distribuição normal
 
 
 # Letra h
+ggplot(df_11, aes(x=heart.rate)) + 
+  geom_histogram(bins = 30, color = "black", fill = "gray") +
+  geom_vline(aes(xintercept = mean(heart.rate)), 
+             linetype = "dashed", size = 0.6)
+
+ggplot(df_11, aes(x=SAPS.II)) + 
+  geom_histogram(bins = 30, color = "black", fill = "gray") +
+  geom_vline(aes(xintercept = mean(SAPS.II)), 
+             linetype = "dashed", size = 0.6)
+
 boxplot(df_11$heart.rate)
 boxplot(df_11$SAPS.II)
 
-assimetria_heart <- ((quantile(df_11$heart.rate, 0.75) - quantile(df_11$heart.rate, 0.5)) - (quantile(df_11$heart.rate, 0.5) - quantile(df_11$heart.rate, 0.25)))/ IQR(df_11$heart.rate) 
-assimetria_saps <- ((quantile(df_11$SAPS.II, 0.75) - quantile(df_11$SAPS.II, 0.5)) - (quantile(df_11$SAPS.II, 0.5) - quantile(df_11$SAPS.II, 0.25)))/ IQR(df_11$SAPS.II) 
-
+assimetria_bowley(df_11$heart.rate)
+assimetria_bowley(df_11$SAPS.II)
 
 # Letra i
-plot(cumsum(df_11$age))
+plot.ecdf(df_11$age)
 
-
-# Letra j ???
+library(agricolae)
+ogiva <- graph.freq(df_11$age)
+pontos <- ogive.freq(ogiva)
 
 
 # Letra k
-assimetria_heart <- ((quantile(df_11$heart.rate, 0.75) - quantile(df_11$heart.rate, 0.5)) - (quantile(df_11$heart.rate, 0.5) - quantile(df_11$heart.rate, 0.25)))/ IQR(df_11$heart.rate) 
-C_heart <- IQR(df_11$heart.rate)/ 2 * (quantile(df_11$heart.rate, 0.9) - quantile(df_11$heart.rate, 0.1))
-C_heart/ 100
+assimetria_bowley(df_11$heart.rate)
+curtose(df_11$heart.rate)
+
+ggplot(df_11, aes(x=heart.rate)) + 
+  geom_histogram(bins = 30, color = "black", fill = "gray") +
+  geom_vline(aes(xintercept = mean(heart.rate)), 
+             linetype = "dashed", size = 0.6)
