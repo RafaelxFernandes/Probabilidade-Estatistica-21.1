@@ -1,4 +1,8 @@
- # Questão 7
+library(ggplot2)
+library(agricolae)
+library(dplyr)
+
+# Questão 7
 df_7 <- data.frame(
   estado = c("Rio de Janeiro", "Goiás", "R. G. do Sul", "Paraná",
           "M. G. do Sul", "Sta. Catarina", "Pernambuco", "Paraíba", "Piauí",
@@ -86,8 +90,16 @@ barplot(table(df_9$Metodologia), main = "Distribuição da Metodologia",
 
 
 # Letra e
-barplot(table(df_9$Estatist), main = "Distribuição das Notas em Estatística",
-        xlab = "Notas Estatísitca", ylab = "Frequência")
+df_9_e <- df_9 %>%
+  group_by(Secao, Estatist) %>%
+  summarise(Media = mean(df_9$Estatist))
+
+df_9_e
+barplot(df_9_e$Estatist)
+
+# barplot(
+#  main = "Distribuição das Notas em Estatística",
+#        xlab = "Notas Estatísitca", ylab = "Frequência")
 
 media_estatistica <- mean(df_9$Estatist)
 
@@ -141,17 +153,8 @@ table(df_11$heart.rate)
 
 
 # Letra c
-sort(unique(df_11$age))
-
-# 1 | 8
-# 2 | 0 1 2 3 4 5 6 9
-# 3 | 1 3 4 5 6 7 8 9
-# 4 | 0 1 2 3 4 5 6 7 8 9
-# 5 | 0 1 2 3 4 5 6 7 8 9
-# 6 | 0 1 2 3 4 5 6 7 8 9
-# 7 | 0 1 2 3 4 5 6 7 8 9
-# 8 | 0 1 2 3 4 5 6 8 9
-# 9 | 0 2 3 6 8
+stem(df_11$age)
+stripchart(df_11$age)
 
 plot(df_11$age, main = "Gráfico de Dispersão da Idade",
      xlab = "Índice", ylab = "Idade")
@@ -190,7 +193,6 @@ assimetria_bowley(df_11$heart.rate)
 # Letra f
 boxplot(df_11$heart.rate)
 
-library(ggplot2)
 ggplot(df_11, aes(x=heart.rate)) + geom_histogram()
 
 
@@ -228,7 +230,6 @@ assimetria_bowley(df_11$SAPS.II)
 # Letra i
 plot.ecdf(df_11$age)
 
-library(agricolae)
 ogiva <- graph.freq(df_11$age)
 pontos <- ogive.freq(ogiva)
 
